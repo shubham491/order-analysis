@@ -7,9 +7,9 @@ import (
 	"github.com/tamerh/jsparser"
 	"log"
 	"os"
-	"github.com/jyotishp/order-analysis/pkg/APIUtil"
-	"github.com/jyotishp/order-analysis/pkg/AuthUtil"
-	"github.com/jyotishp/order-analysis/pkg/Grpc_client"
+	"github.com/shubham491/order-analysis/pkg/APIUtil"
+	"github.com/shubham491/order-analysis/pkg/AuthUtil"
+	"github.com/shubham491/order-analysis/pkg/Grpc_client"
 )
 
 func addAPIPaths(router *gin.Engine){

@@ -2,7 +2,7 @@ package Grpc_client
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jyotishp/order-analysis/pkg/AuthUtil"
+	"github.com/shubham491/order-analysis/pkg/AuthUtil"
 	"google.golang.org/grpc"
 	"log"
 	"net/http"

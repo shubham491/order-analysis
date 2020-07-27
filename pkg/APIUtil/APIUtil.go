@@ -1,18 +1,23 @@
 package APIUtil
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
+	"log"
+	"net"
+
 	//"github.com/jyotishp/order-analysis/pkg/ErrorHandlers"
-	"github.com/jyotishp/order-analysis/pkg/Models"
+	"github.com/shubham491/order-analysis/pkg/Models"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"sort"
 	"strconv"
-	"github.com/jyotishp/order-analysis/pkg/AuthUtil"
-	"github.com/jyotishp/order-analysis/pkg/services/orders/orderspb"
+	"github.com/shubham491/order-analysis/pkg/AuthUtil"
+	"github.com/shubham491/order-analysis/pkg/services/orders/orderspb"
 )
 
 var Restaurant_count = make(map[string]int)
@@ -23,6 +28,25 @@ var Orders = make(map[string] int)
 type KV struct {
 	Key   string
 	Value int
+}
+
+type orders_server struct {
+
+}
+
+func main()  {
+	lis, err := net.Listen("tcp", "0.0.0.0:50051")
+	if err != nil {
+		log.Fatalf("Sorry failed to load server %v: ", err)
+	}
+
+	s := grpc.NewServer()
+
+	orderspb.RegisterOrdersServiceServer(s, &orders_server{})
+	fmt.Println("Orders Server starting...")
+	if s.Serve(lis); err != nil {
+		log.Fatalf("failed to Serve %v", err)
+	}
 }
 
 func KeySort(count map[string] int, num string) []KV{
@@ -55,17 +79,10 @@ func KeySort(count map[string] int, num string) []KV{
 
 
 
-func GetAllRestaurants(c *gin.Context) {
-
-	user := c.MustGet(gin.AuthUserKey).(string)
-	if _, ok := AuthUtil.Secrets[user]; ok {
-		c.JSON(200, Restaurant_count)
-	} else {
-		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
-	}
-
+func (*orders_server) GetAllRestaurants(ctx context.Context, req *orderspb.AllCuisineRequest) (*orderspb.AllRestaurantResponse, error)  {
+	res:=Restaurant_count
+	return res, nil
 }
-
 func GetAllCusines(c *gin.Context) {
 
 	user := c.MustGet(gin.AuthUserKey).(string)

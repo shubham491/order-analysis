@@ -9,19 +9,23 @@ message AllCuisineRequest {}
 message AllStateRequest {}
 
 message AllRestaurantResponse {
-  string allRestaurant=1;
+  map<string,int64> allRestaurant=1;
 }
 
 message AllCuisineResponse {
-  string allCuisine=1;
+  map<string,int64> allCuisine=1;
+}
+
+message AllCuisine{
+  map<string,int64> allCuisine=1;
 }
 
 message AllStateResponse {
-  string allState=1;
+  map<string,AllCuisine> allState=1;
 }
 
 service OrdersService {
   rpc GetAllRestaurant(AllRestaurantRequest) returns (AllRestaurantResponse) {}
   rpc GetAllCuisine(AllCuisineRequest) returns (AllCuisineResponse) {}
-  rpc GetAllState(AllRestaurantRequest) returns (AllRestaurantResponse) {}
+  rpc GetAllState(AllStateRequest) returns (AllStateResponse) {}
 }

@@ -78,22 +78,33 @@ func KeySort(count map[string] int64, num string) []KV{
 
 
 func (s *OrdersServiceServer) GetAllRestaurant(ctx context.Context, request *orderspb.AllRestaurantRequest) (*orderspb.AllRestaurantResponse, error) {
-	res:=&orderspb.AllRestaurantResponse{AllRestaurant:request.RestaurantCount}
+	res:=&orderspb.AllRestaurantResponse{AllRestaurant:Restaurant_count}
 	return res, nil
 }
 func (s *OrdersServiceServer) GetAllCuisine(ctx context.Context, request *orderspb.AllCuisineRequest) (*orderspb.AllCuisineResponse, error) {
-	res:=&orderspb.AllCuisineResponse{AllCuisine:request.CuisineCount}
+	res:=&orderspb.AllCuisineResponse{AllCuisine:Cuisine_count}
 	return res, nil
 }
 
 func (s *OrdersServiceServer) GetAllStateCusine(ctx context.Context, request *orderspb.AllStateRequest) (*orderspb.AllStateResponse, error) {
-	res:=&orderspb.AllStateResponse{AllState:request.StateCuisineCount}
+	var res *orderspb.AllStateResponse
+	var res1 *orderspb.AllCuisine
+	var tempMap=make(map[string]*orderspb.AllCuisine)
+	for k,v:= range State_cuisine_count{
+		res1= &orderspb.AllCuisine{
+			AllCuisine:v,
+		}
+
+		tempMap[k]=res1
+
+	}
+	res=&orderspb.AllStateResponse{AllState:tempMap}
 	return res, nil
 }
 
 
 func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *orderspb.TopNumRestaurantRequest) (*orderspb.TopNumRestaurantResponse, error) {
-	jsonSlice:= KeySort(request.RestaurantCount, request.Num)
+	jsonSlice:= KeySort(Restaurant_count, request.Num)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
 		kv[v.Key]=fmt.Sprint(v.Value)
@@ -103,7 +114,7 @@ func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *o
 }
 
 func (s *OrdersServiceServer) GetTopNumCuisines(c context.Context, request *orderspb.TopNumCuisineRequest) (*orderspb.TopNumCuisineResponse, error) {
-	jsonSlice:= KeySort(request.CuisineCount, request.Num)
+	jsonSlice:= KeySort(Cuisine_count, request.Num)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
 		kv[v.Key]=fmt.Sprint(v.Value)
@@ -113,7 +124,7 @@ func (s *OrdersServiceServer) GetTopNumCuisines(c context.Context, request *orde
 }
 
 func (s *OrdersServiceServer) GetTopNumStatesCuisines(c context.Context, request *orderspb.TopNumStatesCuisinesRequest) (*orderspb.TopNumStatesCuisinesResponse, error) {
-	jsonSlice:= KeySort(request.StateCuisineCount[request.State].AllCuisine, request.Num)
+	jsonSlice:= KeySort(State_cuisine_count[request.State], request.Num)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
 		kv[v.Key]=fmt.Sprint(v.Value)
@@ -145,8 +156,8 @@ func (s *OrdersServiceServer) AddOrder(c context.Context, request *orderspb.AddO
 	}
 	Id := fmt.Sprint(orderData.Id)
 	fmt.Println(Id)
-	fmt.Println(request.Orders)
-	if request.Orders[Id] >= 1{
+	fmt.Println(Orders)
+	if Orders[Id] >= 1{
 		tempMap:=make(map[string] string)
 		tempMap["error"]=fmt.Sprintf("OrderId %v already present",Id)
 		res:=&orderspb.AddOrderResponse{Response: tempMap}
@@ -191,16 +202,16 @@ func (s *OrdersServiceServer) AddOrder(c context.Context, request *orderspb.AddO
 	cuisine := orderData.Cuisine
 	state := orderData.State
 
-	request.RestaurantCount[restaurant]++
-	request.CuisineCount[cuisine]++
-	request.Orders[string(Id)]++
-	statemap, ok := request.StateCuisineCount[state]
+	Restaurant_count[restaurant]++
+	Cuisine_count[cuisine]++
+	Orders[string(Id)]++
+	statemap, ok := State_cuisine_count[state]
 	if ok {
-		statemap.AllCuisine[cuisine]++
+		statemap[cuisine]++
 	} else {
 		tempmap:=make(map[string] int64)
-		request.StateCuisineCount[state] = &orderspb.AllCuisine{AllCuisine: tempmap}
-		request.StateCuisineCount[state].AllCuisine[cuisine]++
+		State_cuisine_count[state] = tempmap
+		State_cuisine_count[state][cuisine]++
 	}
 
 	tempMap:=make(map[string] string)

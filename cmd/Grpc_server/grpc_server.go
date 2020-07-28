@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
+	"github.com/jyotishp/order-analysis/pkg/APIUtil"
+	"github.com/tamerh/jsparser"
+
 	//"github.com/gin-gonic/gin"
 	"github.com/shubham491/order-analysis/pkg/Models"
 	"os"
@@ -28,7 +32,10 @@ import (
 	"github.com/shubham491/order-analysis/pkg/services/orders/orderspb"
 )
 
-
+var Restaurant_count = make(map[string] int64)
+var Cuisine_count = make(map[string] int64)
+var State_cuisine_count = make(map[string]map[string]int64)
+var Orders = make(map[string] int64)
 
 type KV struct {
 	Key   string
@@ -211,8 +218,34 @@ func main()  {
 	}
 
 	s := grpc.NewServer()
+	r, _ := os.Open("outputs.json")
+	br := bufio.NewReaderSize(r, 65536)
+	parser := jsparser.NewJSONParser(br, "orders")
 
+	for json := range parser.Stream() {
+		if json.Err != nil {
+			log.Fatal(json.Err)
+		}
+		//fmt.Println(json.ObjectVals["OrderId"])
+		restaurant := json.ObjectVals["RestName"]
+		cuisine := json.ObjectVals["Cuisine"]
+		state := json.ObjectVals["State"]
+		id := json.ObjectVals["Id"]
+
+		Restaurant_count[restaurant.(string)]++
+		Cuisine_count[cuisine.(string)]++
+		Orders[id.(string)]++
+		statemap, ok := State_cuisine_count[state.(string)]
+		if ok {
+			statemap[cuisine.(string)]++
+		} else {
+			State_cuisine_count[state.(string)] = make(map[string]int64)
+			State_cuisine_count[state.(string)][cuisine.(string)]++
+		}
+	}
+	fmt.Println(APIUtil.Orders["2999999"])
 	orderspb.RegisterOrdersServiceServer(s, &OrdersServiceServer{})
+
 	fmt.Println("Orders Server starting...")
 	if s.Serve(lis); err != nil {
 		log.Fatalf("failed to Serve %v", err)

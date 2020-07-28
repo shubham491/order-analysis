@@ -10,10 +10,7 @@ import (
 	"net/http"
 )
 
-var Restaurant_count = make(map[string] int64)
-var Cuisine_count = make(map[string] int64)
-var State_cuisine_count = make(map[string]map[string]int64)
-var Orders = make(map[string] int64)
+
 
 func GetAllRestaurants(c *gin.Context) {
 
@@ -28,7 +25,7 @@ func GetAllRestaurants(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AllRestaurantRequest{RestaurantCount: Restaurant_count}
+		req := &orderspb.AllRestaurantRequest{}
 		res, err := oc.GetAllRestaurant(c, req)
 		c.JSON(200,res.GetAllRestaurant())
 	} else {
@@ -50,7 +47,7 @@ func GetAllCusines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AllCuisineRequest{CuisineCount: Cuisine_count}
+		req := &orderspb.AllCuisineRequest{}
 		res, err := oc.GetAllCuisine(c, req)
 		c.JSON(200,res.GetAllCuisine())
 	} else {
@@ -73,19 +70,19 @@ func GetAllStatesCuisines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		var res *orderspb.AllStateResponse
-		var res1 *orderspb.AllCuisine
-		var tempMap=make(map[string]*orderspb.AllCuisine)
-		for k,v:= range State_cuisine_count{
-			res1= &orderspb.AllCuisine{
-				AllCuisine:v,
-			}
-
-			tempMap[k]=res1
-
-		}
-		req := &orderspb.AllStateRequest{StateCuisineCount: tempMap}
-		res, err = oc.GetAllStateCusine(c, req)
+		//var res *orderspb.AllStateResponse
+		//var res1 *orderspb.AllCuisine
+		//var tempMap=make(map[string]*orderspb.AllCuisine)
+		//for k,v:= range State_cuisine_count{
+		//	res1= &orderspb.AllCuisine{
+		//		AllCuisine:v,
+		//	}
+		//
+		//	tempMap[k]=res1
+		//
+		//}
+		req := &orderspb.AllStateRequest{}
+		res, err := oc.GetAllStateCusine(c, req)
 		c.JSON(200,res.GetAllState())
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
@@ -110,7 +107,7 @@ func GetTopNumRestaurants(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.TopNumRestaurantRequest{Num:num,RestaurantCount: Restaurant_count}
+		req := &orderspb.TopNumRestaurantRequest{Num:num}
 		res, err := oc.GetTopNumRestaurants(c, req)
 		c.JSON(200,res)
 	} else {
@@ -135,7 +132,7 @@ func GetTopNumCuisines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.TopNumCuisineRequest{Num:num,CuisineCount: Cuisine_count}
+		req := &orderspb.TopNumCuisineRequest{Num:num}
 		res, err := oc.GetTopNumCuisines(c, req)
 		c.JSON(200,res)
 	} else {
@@ -161,17 +158,17 @@ func GetTopNumStateCuisines(c *gin.Context) {
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
 		//var res *orderspb.AllStateResponse
-		var res1 *orderspb.AllCuisine
-		var tempMap=make(map[string]*orderspb.AllCuisine)
-		for k,v:= range State_cuisine_count{
-			res1= &orderspb.AllCuisine{
-				AllCuisine:v,
-			}
-
-			tempMap[k]=res1
-
-		}
-		req := &orderspb.TopNumStatesCuisinesRequest{Num:num, State: state,StateCuisineCount: tempMap}
+		//var res1 *orderspb.AllCuisine
+		//var tempMap=make(map[string]*orderspb.AllCuisine)
+		//for k,v:= range State_cuisine_count{
+		//	res1= &orderspb.AllCuisine{
+		//		AllCuisine:v,
+		//	}
+		//
+		//	tempMap[k]=res1
+		//
+		//}
+		req := &orderspb.TopNumStatesCuisinesRequest{Num:num, State: state}
 		res, err := oc.GetTopNumStatesCuisines(c, req)
 		c.JSON(200,res)
 	} else {
@@ -197,19 +194,19 @@ func AddOrder(c *gin.Context) {
 			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 			return
 		}
-		var res1 *orderspb.AllCuisine
-		var tempMap=make(map[string]*orderspb.AllCuisine)
-		for k,v:= range State_cuisine_count{
-			res1= &orderspb.AllCuisine{
-				AllCuisine:v,
-			}
-
-			tempMap[k]=res1
-
-		}
+		//var res1 *orderspb.AllCuisine
+		//var tempMap=make(map[string]*orderspb.AllCuisine)
+		//for k,v:= range State_cuisine_count{
+		//	res1= &orderspb.AllCuisine{
+		//		AllCuisine:v,
+		//	}
+		//
+		//	tempMap[k]=res1
+		//
+		//}
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AddOrderRequest{Order: string(content),RestaurantCount: Restaurant_count,CuisineCount: Cuisine_count,StateCuisineCount: tempMap,Orders: Orders}
+		req := &orderspb.AddOrderRequest{Order: string(content)}
 		res, err := oc.AddOrder(c, req)
 		c.JSON(200,res)
 	} else {

@@ -92,7 +92,7 @@ func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *o
 	fmt.Println(jsonSlice)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
-		kv[v.Key]=string(v.Value)
+		kv[v.Key]=fmt.Sprint(v.Value)
 	}
 	fmt.Println(kv)
 	res:=&orderspb.TopNumRestaurantResponse{TopNumRestaurant:kv}
@@ -103,7 +103,7 @@ func (s *OrdersServiceServer) GetTopNumCuisines(c context.Context, request *orde
 	jsonSlice:= KeySort(request.CuisineCount, request.Num)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
-		kv[v.Key]=string(v.Value)
+		kv[v.Key]=fmt.Sprint(v.Value)
 	}
 	res:=&orderspb.TopNumCuisineResponse{TopNumCuisine:kv}
 	return res, nil
@@ -113,7 +113,7 @@ func (s *OrdersServiceServer) GetTopNumStatesCuisines(c context.Context, request
 	jsonSlice:= KeySort(request.StateCuisineCount[request.State].AllCuisine, request.Num)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
-		kv[v.Key]=string(v.Value)
+		kv[v.Key]=fmt.Sprint(v.Value)
 	}
 	res:=&orderspb.TopNumStatesCuisinesResponse{TopNumState:kv}
 	return res, nil

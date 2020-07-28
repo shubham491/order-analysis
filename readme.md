@@ -34,7 +34,7 @@ The following results are generated using the JSON file:
 Added basic authentication to all APIs.
 
 ### Project Directory Structure
-<div class="text-gray-dark">
+```
 .
 ├── bin
 │   └── protoc-gen-go
@@ -75,7 +75,7 @@ Added basic authentication to all APIs.
 │               ├── orders.pb.go
 │               └── orders.proto
 ├── readme.md
-</div>
+```
 
 ### Instructions:
 

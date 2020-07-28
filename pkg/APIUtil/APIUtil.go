@@ -91,6 +91,7 @@ func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *o
 	for _,v:= range jsonSlice{
 		kv[v.Key]=string(v.Value)
 	}
+	fmt.Println(kv)
 	res:=&orderspb.TopNumRestaurantResponse{TopNumRestaurant:kv}
 	return res, nil
 }

@@ -156,7 +156,7 @@ func (s *OrdersServiceServer) AddOrder(c context.Context, request *orderspb.AddO
 	}
 	Id := fmt.Sprint(orderData.Id)
 	fmt.Println(Id)
-	fmt.Println(Orders)
+	//fmt.Println(Orders)
 	if Orders[Id] >= 1{
 		tempMap:=make(map[string] string)
 		tempMap["error"]=fmt.Sprintf("OrderId %v already present",Id)

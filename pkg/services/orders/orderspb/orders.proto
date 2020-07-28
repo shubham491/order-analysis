@@ -9,18 +9,27 @@ string Key=1;
 int64 Value =2;
 }
 
-message AllRestaurantRequest {}
-message AllCuisineRequest {}
-message AllStateRequest {}
+message AllRestaurantRequest {
+  map<string,int64> restaurantCount =1;
+}
+message AllCuisineRequest {
+  map<string,int64> cuisineCount =1;
+}
+message AllStateRequest {
+  map<string,AllCuisine> stateCuisineCount =1;
+}
 message TopNumRestaurantRequest{
   int64 num=1;
+  map<string,int64> restaurantCount =2;
 }
 message TopNumCuisineRequest{
   int64 num=1;
+  map<string,int64> cuisineCount =2;
 }
 message TopNumStatesCuisinesRequest{
   int64 num=1;
   string state=2;
+  map<string,AllCuisine> stateCuisineCount =3;
 }
 message AddOrderRequest{
   string order=1;

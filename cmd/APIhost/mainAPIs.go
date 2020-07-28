@@ -20,11 +20,11 @@ func addAPIPaths(router *gin.Engine){
 
 	//restaurantAPI:=router.Group("/restaurant")
 	restaurantAPI.GET("/all", Grpc_client.GetAllRestaurants)
-	restaurantAPI.GET("/top/:num", APIUtil.GetTopNumRestaurants)
+	restaurantAPI.GET("/top/:num", Grpc_client.GetTopNumRestaurants)
 
 	//cuisineAPI:=router.Group("/cuisine")
 	cuisineAPI.GET("/all", Grpc_client.GetAllCusines)
-	cuisineAPI.GET("/top/:num", APIUtil.GetTopNumCuisines)
+	cuisineAPI.GET("/top/:num", Grpc_client.GetTopNumCuisines)
 
 	//stateCuisineAPI:=router.Group("/state")
 	stateCuisineAPI.GET("/all", Grpc_client.GetAllStatesCuisines)

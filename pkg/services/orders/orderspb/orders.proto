@@ -20,6 +20,7 @@ message TopNumCuisineRequest{
 }
 message TopNumStatesCuisinesRequest{
   int64 num=1;
+  string state=2;
 }
 
 message AllRestaurantResponse {

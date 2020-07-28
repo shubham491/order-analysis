@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 var Restaurant_count = make(map[string] int64)
@@ -100,11 +99,8 @@ func GetTopNumRestaurants(c *gin.Context) {
 
 
 	if _, ok := AuthUtil.Secrets[user]; ok {
-		num,err := c.Param("num")
-		if err != nil {
-			log.Fatalf("Enter valid integer for num: %v: ", err)
-			return
-		}
+		num:= c.Param("num")
+
 
 		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 		if err != nil {
@@ -128,11 +124,8 @@ func GetTopNumCuisines(c *gin.Context) {
 
 
 	if _, ok := AuthUtil.Secrets[user]; ok {
-		num,err := c.Param("num")
-		if err != nil {
-			log.Fatalf("Enter valid integer for num: %v: ", err)
-			return
-		}
+		num:= c.Param("num")
+
 
 		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 		if err != nil {
@@ -156,12 +149,8 @@ func GetTopNumStateCuisines(c *gin.Context) {
 
 
 	if _, ok := AuthUtil.Secrets[user]; ok {
-		num,err := c.Param("num")
+		num := c.Param("num")
 		state:=c.Param("state")
-		if err != nil {
-			log.Fatalf("Enter valid integer for num: %v: ", err)
-			return
-		}
 
 		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 		if err != nil {

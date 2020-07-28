@@ -208,10 +208,19 @@ func AddOrder(c *gin.Context) {
 			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 			return
 		}
+		var res1 *orderspb.AllCuisine
+		var tempMap=make(map[string]*orderspb.AllCuisine)
+		for k,v:= range State_cuisine_count{
+			res1= &orderspb.AllCuisine{
+				AllCuisine:v,
+			}
 
+			tempMap[k]=res1
+
+		}
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AddOrderRequest{Order: string(content)}
+		req := &orderspb.AddOrderRequest{Order: string(content),RestaurantCount: Restaurant_count,CuisineCount: Cuisine_count,StateCuisineCount: tempMap,Orders: Orders}
 		res, err := oc.AddOrder(c, req)
 		c.JSON(200,res)
 	} else {

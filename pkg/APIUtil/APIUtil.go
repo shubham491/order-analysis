@@ -138,7 +138,7 @@ func (s *OrdersServiceServer) AddOrder(c context.Context, request *orderspb.AddO
 	}
 	Id := fmt.Sprint(orderData.Id)
 	fmt.Println(Id)
-	if Orders[string(Id)] >= 1{
+	if request.Orders[string(Id)] >= 1{
 		tempMap:=make(map[string] string)
 		tempMap["error"]=fmt.Sprintf("OrderId %v already present",Id)
 		res:=&orderspb.AddOrderResponse{Response: tempMap}
@@ -183,15 +183,16 @@ func (s *OrdersServiceServer) AddOrder(c context.Context, request *orderspb.AddO
 	cuisine := orderData.Cuisine
 	state := orderData.State
 
-	Restaurant_count[restaurant]++
-	Cuisine_count[cuisine]++
-	Orders[string(Id)]++
-	statemap, ok := State_cuisine_count[state]
+	request.RestaurantCount[restaurant]++
+	request.CuisineCount[cuisine]++
+	request.Orders[string(Id)]++
+	statemap, ok := request.StateCuisineCount[state]
 	if ok {
-		statemap[cuisine]++
+		statemap.AllCuisine[cuisine]++
 	} else {
-		State_cuisine_count[state] = make(map[string]int64)
-		State_cuisine_count[state][cuisine]++
+		tempmap:=make(map[string] int64)
+		request.StateCuisineCount[state] = &orderspb.AllCuisine{AllCuisine: tempmap}
+		request.StateCuisineCount[state].AllCuisine[cuisine]++
 	}
 
 	tempMap:=make(map[string] string)

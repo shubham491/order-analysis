@@ -33,6 +33,27 @@ The following results are generated using the JSON file:
     
 Added basic authentication to all APIs.
 
+### Data
+
+```
+type Order struct {
+	Id          int
+	Discount    float64
+	Amount      float64
+	PaymentMode string
+	Rating      int
+	Duration    int
+	Cuisine     string
+	Time        int
+	CustId      int
+	CustName    string
+	RestId      int
+	RestName    string
+	State       string
+}
+
+```
+
 ### Project Directory Structure
 ```
 .
@@ -93,7 +114,7 @@ outputs.json is generated inside JSONConverter directory.
 
 place the json file inside Grpc_server directory.
 
-go run grpc_server.go to start the grpc server(takes around 30 seconds to start)
+go run grpc_server.go to start the grpc server(takes around 16 seconds to start)
 
 go to new terminal instance and cd cmd/APIhost
 

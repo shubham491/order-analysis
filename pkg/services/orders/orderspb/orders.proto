@@ -7,6 +7,15 @@ option go_package="orders/orderspb";
 message AllRestaurantRequest {}
 message AllCuisineRequest {}
 message AllStateRequest {}
+message TopNumRestaurantRequest{
+  int64 num=1;
+}
+message TopNumCuisineRequest{
+  int64 num=1;
+}
+message TopNumStatesCuisinesRequest{
+  int64 num=1;
+}
 
 message AllRestaurantResponse {
   map<string,int64> allRestaurant=1;
@@ -24,8 +33,23 @@ message AllStateResponse {
   map<string,AllCuisine> allState=1;
 }
 
+message TopNumRestaurantResponse{
+  map<string, int64> topNumRestaurant = 1;
+}
+
+message TopNumCuisineResponse{
+  map<string, int64> topNumCuisine = 1;
+}
+
+message TopNumStatesCuisinesResponse{
+  map<string,AllCuisine> topNumState=1;
+}
+
 service OrdersService {
   rpc GetAllRestaurant(AllRestaurantRequest) returns (AllRestaurantResponse) {}
   rpc GetAllCuisine(AllCuisineRequest) returns (AllCuisineResponse) {}
-  rpc GetAllState(AllStateRequest) returns (AllStateResponse) {}
+  rpc GetAllStateCusine(AllStateRequest) returns (AllStateResponse) {}
+  rpc GetTopNumRestaurants(TopNumRestaurantRequest) returns (TopNumRestaurantResponse){}
+  rpc GetTopNumCuisines(TopNumCuisineRequest) returns (TopNumCuisineResponse){}
+  rpc GetTopNumStatesCuisines(TopNumStatesCuisinesRequest) returns (TopNumStatesCuisinesResponse){}
 }

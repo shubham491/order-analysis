@@ -42,7 +42,6 @@ type OrdersServiceServer struct {
 
 func KeySort(count map[string] int64, num string) []KV{
 	var ss []KV
-	fmt.Println(count,num)
 	for k, v := range count {
 		ss = append(ss, KV{k, v})
 	}
@@ -87,14 +86,11 @@ func (s *OrdersServiceServer) GetAllStateCusine(ctx context.Context, request *or
 
 
 func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *orderspb.TopNumRestaurantRequest) (*orderspb.TopNumRestaurantResponse, error) {
-	fmt.Println(request.Num)
 	jsonSlice:= KeySort(request.RestaurantCount, request.Num)
-	fmt.Println(jsonSlice)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
 		kv[v.Key]=fmt.Sprint(v.Value)
 	}
-	fmt.Println(kv)
 	res:=&orderspb.TopNumRestaurantResponse{TopNumRestaurant:kv}
 	return res, nil
 }

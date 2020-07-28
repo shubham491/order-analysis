@@ -1,7 +1,6 @@
 package Grpc_client
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shubham491/order-analysis/pkg/AuthUtil"
 	"github.com/shubham491/order-analysis/pkg/services/orders/orderspb"
@@ -101,7 +100,7 @@ func GetTopNumRestaurants(c *gin.Context) {
 
 
 	if _, ok := AuthUtil.Secrets[user]; ok {
-		num,err := strconv.ParseInt(c.Param("num"),10,64)
+		num,err := c.Param("num")
 		if err != nil {
 			log.Fatalf("Enter valid integer for num: %v: ", err)
 			return
@@ -117,7 +116,6 @@ func GetTopNumRestaurants(c *gin.Context) {
 		oc := orderspb.NewOrdersServiceClient(conn)
 		req := &orderspb.TopNumRestaurantRequest{Num:num,RestaurantCount: Restaurant_count}
 		res, err := oc.GetTopNumRestaurants(c, req)
-		fmt.Println(res)
 		c.JSON(200,res)
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
@@ -130,7 +128,7 @@ func GetTopNumCuisines(c *gin.Context) {
 
 
 	if _, ok := AuthUtil.Secrets[user]; ok {
-		num,err := strconv.ParseInt(c.Param("num"),10,64)
+		num,err := c.Param("num")
 		if err != nil {
 			log.Fatalf("Enter valid integer for num: %v: ", err)
 			return
@@ -158,7 +156,7 @@ func GetTopNumStateCuisines(c *gin.Context) {
 
 
 	if _, ok := AuthUtil.Secrets[user]; ok {
-		num,err := strconv.ParseInt(c.Param("num"),10,64)
+		num,err := c.Param("num")
 		state:=c.Param("state")
 		if err != nil {
 			log.Fatalf("Enter valid integer for num: %v: ", err)

@@ -87,8 +87,8 @@ func (s *OrdersServiceServer) GetAllStateCusine(ctx context.Context, request *or
 
 
 func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *orderspb.TopNumRestaurantRequest) (*orderspb.TopNumRestaurantResponse, error) {
-	fmt.Println(string(request.Num))
-	jsonSlice:= KeySort(request.RestaurantCount, string(request.Num))
+	fmt.Println(request.Num)
+	jsonSlice:= KeySort(request.RestaurantCount, request.Num)
 	fmt.Println(jsonSlice)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
@@ -100,7 +100,7 @@ func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *o
 }
 
 func (s *OrdersServiceServer) GetTopNumCuisines(c context.Context, request *orderspb.TopNumCuisineRequest) (*orderspb.TopNumCuisineResponse, error) {
-	jsonSlice:= KeySort(request.CuisineCount, string(request.Num))
+	jsonSlice:= KeySort(request.CuisineCount, request.Num)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
 		kv[v.Key]=string(v.Value)
@@ -110,7 +110,7 @@ func (s *OrdersServiceServer) GetTopNumCuisines(c context.Context, request *orde
 }
 
 func (s *OrdersServiceServer) GetTopNumStatesCuisines(c context.Context, request *orderspb.TopNumStatesCuisinesRequest) (*orderspb.TopNumStatesCuisinesResponse, error) {
-	jsonSlice:= KeySort(request.StateCuisineCount[request.State].AllCuisine, string(request.Num))
+	jsonSlice:= KeySort(request.StateCuisineCount[request.State].AllCuisine, request.Num)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
 		kv[v.Key]=string(v.Value)

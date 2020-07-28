@@ -1,9 +1,9 @@
-package APIUtil
+package main
 
 import (
 	"context"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
+	//"github.com/gin-gonic/gin"
 	"github.com/shubham491/order-analysis/pkg/Models"
 	"os"
 
@@ -35,7 +35,7 @@ var Orders = make(map[string] int64)
 
 type KV struct {
 	Key   string
-	Value int
+	Value int64
 }
 
 type OrdersServiceServer struct {

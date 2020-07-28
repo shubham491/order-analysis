@@ -42,6 +42,7 @@ type OrdersServiceServer struct {
 
 func KeySort(count map[string] int64, num string) []KV{
 	var ss []KV
+	fmt.Println(count)
 	for k, v := range count {
 		ss = append(ss, KV{k, v})
 	}

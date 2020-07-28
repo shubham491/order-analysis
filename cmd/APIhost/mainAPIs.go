@@ -60,7 +60,7 @@ func main() {
 		if ok {
 			statemap[cuisine.(string)]++
 		} else {
-			Grpc_client.State_cuisine_count[state.(string)] = make(map[string]int)
+			Grpc_client.State_cuisine_count[state.(string)] = make(map[string]int64)
 			Grpc_client.State_cuisine_count[state.(string)][cuisine.(string)]++
 		}
 	}

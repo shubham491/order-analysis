@@ -33,6 +33,10 @@ message TopNumStatesCuisinesRequest{
 }
 message AddOrderRequest{
   string order=1;
+  map<string,int64> restaurantCount =2;
+  map<string,int64> cuisineCount =3;
+  map<string,AllCuisine> stateCuisineCount =4;
+  map<string,int64> orders =5;
 }
 
 

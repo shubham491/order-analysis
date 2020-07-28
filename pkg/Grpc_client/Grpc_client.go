@@ -29,7 +29,7 @@ func GetAllRestaurants(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AllRestaurantRequest{}
+		req := &orderspb.AllRestaurantRequest{RestaurantCount: Restaurant_count}
 		res, err := oc.GetAllRestaurant(c, req)
 		c.JSON(200,res.GetAllRestaurant())
 	} else {
@@ -51,7 +51,7 @@ func GetAllCusines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AllCuisineRequest{}
+		req := &orderspb.AllCuisineRequest{CuisineCount: Cuisine_count}
 		res, err := oc.GetAllCuisine(c, req)
 		c.JSON(200,res.GetAllCuisine())
 	} else {
@@ -74,8 +74,19 @@ func GetAllStatesCuisines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AllStateRequest{}
-		res, err := oc.GetAllStateCusine(c, req)
+		var res *orderspb.AllStateResponse
+		var res1 *orderspb.AllCuisine
+		var tempMap=make(map[string]*orderspb.AllCuisine)
+		for k,v:= range State_cuisine_count{
+			res1= &orderspb.AllCuisine{
+				AllCuisine:v,
+			}
+
+			tempMap[k]=res1
+
+		}
+		req := &orderspb.AllStateRequest{StateCuisineCount: tempMap}
+		res, err = oc.GetAllStateCusine(c, req)
 		c.JSON(200,res.GetAllState())
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
@@ -103,7 +114,7 @@ func GetTopNumRestaurants(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.TopNumRestaurantRequest{Num:num}
+		req := &orderspb.TopNumRestaurantRequest{Num:num,RestaurantCount: Restaurant_count}
 		res, err := oc.GetTopNumRestaurants(c, req)
 		c.JSON(200,res)
 	} else {
@@ -131,7 +142,7 @@ func GetTopNumCuisines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.TopNumCuisineRequest{Num:num}
+		req := &orderspb.TopNumCuisineRequest{Num:num,CuisineCount: Cuisine_count}
 		res, err := oc.GetTopNumCuisines(c, req)
 		c.JSON(200,res)
 	} else {
@@ -160,7 +171,18 @@ func GetTopNumStateCuisines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.TopNumStatesCuisinesRequest{Num:num, State: state}
+		//var res *orderspb.AllStateResponse
+		var res1 *orderspb.AllCuisine
+		var tempMap=make(map[string]*orderspb.AllCuisine)
+		for k,v:= range State_cuisine_count{
+			res1= &orderspb.AllCuisine{
+				AllCuisine:v,
+			}
+
+			tempMap[k]=res1
+
+		}
+		req := &orderspb.TopNumStatesCuisinesRequest{Num:num, State: state,StateCuisineCount: tempMap}
 		res, err := oc.GetTopNumStatesCuisines(c, req)
 		c.JSON(200,res)
 	} else {

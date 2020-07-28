@@ -33,6 +33,50 @@ The following results are generated using the JSON file:
     
 Added basic authentication to all APIs.
 
+### Project Directory Structure
+<div class="text-gray-dark">
+.
+├── bin
+│   └── protoc-gen-go
+├── cmd
+│   ├── APIhost
+│   │   └── mainAPIs.go
+│   ├── Grpc_server
+│   │   └── grpc_server.go
+│   └── JSONconverter
+│       └── main.go
+├── pkg
+│   ├── AuthUtil
+│   │   └── AuthUtil.go
+│   ├── ErrorHandlers
+│   │   └── lib.go
+│   ├── FileUtil
+│   │   └── FileUtil.go
+│   ├── Grpc_client
+│   │   └── Grpc_client.go
+│   ├── Models
+│   │   ├── models.go
+│   │   └── relationships.go
+│   ├── darwin_amd64
+│   │   ├── github.com
+│   │   │   ├── gin-gonic
+│   │   │   │   └── gin.a
+│   │   │   ├── jyotishp
+│   │   │   │   └── order-analysis
+│   │   │   │       └── pkg
+│   │   │   │           └── FileUtil.a
+│   │   │   └── tamerh
+│   │   │       └── jsparser.a
+│   │   └── google.golang.org
+│   │       └── grpc.a
+│   └── services
+│       └── orders
+│           └── orderspb
+│               ├── orders.pb.go
+│               └── orders.proto
+├── readme.md
+</div>
+
 ### Instructions:
 
 External libraries used:

@@ -1,6 +1,7 @@
 package Grpc_client
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shubham491/order-analysis/pkg/AuthUtil"
 	"github.com/shubham491/order-analysis/pkg/services/orders/orderspb"
@@ -116,6 +117,7 @@ func GetTopNumRestaurants(c *gin.Context) {
 		oc := orderspb.NewOrdersServiceClient(conn)
 		req := &orderspb.TopNumRestaurantRequest{Num:num,RestaurantCount: Restaurant_count}
 		res, err := oc.GetTopNumRestaurants(c, req)
+		fmt.Println(res)
 		c.JSON(200,res)
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})

@@ -4,6 +4,11 @@ package orders;
 
 option go_package="orders/orderspb";
 
+message KV {
+string Key=1;
+int64 Value =2;
+}
+
 message AllRestaurantRequest {}
 message AllCuisineRequest {}
 message AllStateRequest {}
@@ -34,15 +39,15 @@ message AllStateResponse {
 }
 
 message TopNumRestaurantResponse{
-  map<string, int64> topNumRestaurant = 1;
+  repeated KV topNumRestaurant = 1;
 }
 
 message TopNumCuisineResponse{
-  map<string, int64> topNumCuisine = 1;
+  repeated KV topNumCuisine = 1;
 }
 
 message TopNumStatesCuisinesResponse{
-  map<string,AllCuisine> topNumState=1;
+  repeated KV topNumState=1;
 }
 
 service OrdersService {

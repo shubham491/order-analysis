@@ -2,8 +2,8 @@ package APIUtil
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
-	"net/http"
+	//"github.com/gin-gonic/gin"
+	//"net/http"
 
 	//"encoding/json"
 	"fmt"
@@ -37,7 +37,7 @@ type OrdersServiceServer struct {
 
 }
 
-func KeySort(count map[string] int, num string) []KV{
+func KeySort(count map[string] int64, num string) []KV{
 	var ss []KV
 	for k, v := range count {
 		ss = append(ss, KV{k, v})
@@ -93,22 +93,12 @@ func (s *OrdersServiceServer) GetAllState(ctx context.Context, request *orderspb
 }
 
 
-func GetTopNumRestaurants(c *gin.Context) {
+func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *orderspb.TopNumRestaurantRequest) (*orderspb.TopNumRestaurantResponse, error) {
+	jsonSlice:= KeySort(Restaurant_count, string(request.Num))
+	res:=&orderspb.TopNumRestaurantResponse{TopNumRestaurant:jsonSlice}
+	return res, nil
 
-	user := c.MustGet(gin.AuthUserKey).(string)
-	if _, ok := AuthUtil.Secrets[user]; ok {
-		num := c.Param("num")
-		jsonSlice:= KeySort(Restaurant_count, num)
-		if jsonSlice == nil{
-			c.JSON(200,gin.H{
-				"Error":"Provide valid integer value.",
-			})
-		} else {
-			c.JSON(200, jsonSlice)
-		}
-	} else {
-		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
-	}
+
 }
 //
 //

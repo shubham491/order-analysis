@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func GetAllRestaurants(c *gin.Context) {
@@ -82,17 +83,23 @@ func GetTopNumRestaurants(c *gin.Context) {
 
 
 	if _, ok := AuthUtil.Secrets[user]; ok {
-		num := c.Param("num")
+		num,err := strconv.ParseInt(c.Param("num"),10,64)
+		if err != nil {
+			log.Fatalf("Enter valid integer for num: %v: ", err)
+			return
+		}
+
 		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 		if err != nil {
 			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+			return
 		}
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.AllStateRequest{}
-		res, err := oc.GetAllState(c, req)
-		c.JSON(200,res.GetAllState())
+		req := &orderspb.TopNumRestaurantRequest{Num:num}
+		res, err := oc.GetTopNumRestaurants(c, req)
+		c.JSON(200,res)
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
 	}

@@ -2,6 +2,11 @@ package APIUtil
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/gin-gonic/gin"
+	"github.com/shubham491/order-analysis/pkg/Models"
+	"os"
+
 	//"github.com/gin-gonic/gin"
 	//"net/http"
 
@@ -36,6 +41,7 @@ type KV struct {
 type OrdersServiceServer struct {
 
 }
+
 
 func KeySort(count map[string] int64, num string) []KV{
 	var ss []KV
@@ -76,7 +82,7 @@ func (s *OrdersServiceServer) GetAllCuisine(ctx context.Context, request *orders
 	return res, nil
 }
 
-func (s *OrdersServiceServer) GetAllState(ctx context.Context, request *orderspb.AllStateRequest) (*orderspb.AllStateResponse, error) {
+func (s *OrdersServiceServer) GetAllStateCusine(ctx context.Context, request *orderspb.AllStateRequest) (*orderspb.AllStateResponse, error) {
 	var res *orderspb.AllStateResponse
 	var res1 *orderspb.AllCuisine
 	var tempMap=make(map[string]*orderspb.AllCuisine)
@@ -122,121 +128,93 @@ func (s *OrdersServiceServer) GetTopNumStatesCuisines(c context.Context, request
 	res:=&orderspb.TopNumStatesCuisinesResponse{TopNumState:kv}
 	return res, nil
 }
-//
-//
-//
-//func GetTopNumStatesCuisines(c *gin.Context) {
-//
-//	user := c.MustGet(gin.AuthUserKey).(string)
-//	if _, ok := AuthUtil.Secrets[user]; ok {
-//
-//		num := c.Param("num")
-//		state := c.Param("state")
-//		jsonSlice:= KeySort(State_cuisine_count[state], num)
-//		if jsonSlice == nil{
-//			c.JSON(200,gin.H{
-//				"Error":"Provide valid integer value.",
-//			})
-//		} else {
-//			c.JSON(200, jsonSlice)
-//		}
-//	} else {
-//		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
-//	}
-//}
-//
-//func GetTopNumCuisines(c *gin.Context) {
-//
-//	user := c.MustGet(gin.AuthUserKey).(string)
-//	if _, ok := AuthUtil.Secrets[user]; ok {
-//		num := c.Param("num")
-//		jsonSlice:= KeySort(Cuisine_count, num)
-//		if jsonSlice == nil{
-//			c.JSON(200,gin.H{
-//				"Error":"Provide valid integer value.",
-//			})
-//		} else {
-//			c.JSON(200, jsonSlice)
-//		}
-//	} else {
-//		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
-//	}
-//}
-//
-//func CheckError(err error, c *gin.Context)  {
-//	if err != nil {
-//		c.JSON(200,gin.H{
-//			"error":err.Error(),
-//		})
-//	}
-//}
-//
-//func AddOrder(c *gin.Context){
-//	user := c.MustGet(gin.AuthUserKey).(string)
-//	if _, ok := AuthUtil.Secrets[user]; ok {
-//	body:=c.Request.Body
-//	content, _:= ioutil.ReadAll(body)
-//	var orderData Models.Order
-//	var orderData2 Models.Order
-//	err := json.Unmarshal([]byte(content), &orderData)
-//	CheckError(err,c)
-//	err = json.Unmarshal(content, &orderData2)
-//	CheckError(err,c)
-//	Id := string(orderData2.Id)
-//	fmt.Println(orderData2)
-//	if Orders[string(Id)] == 1{
-//		c.JSON(200, gin.H{
-//			"Error":"Order ID already there",
-//		})
-//		return
-//	}
-//
-//	f, err := os.OpenFile("outputs.json", os.O_RDWR, os.ModePerm)
-//	defer f.Close()
-//	CheckError(err,c)
-//
-//	orderJson, err := json.Marshal(orderData)
-//	CheckError(err,c)
-//
-//	orderString := string(orderJson)
-//	orderString = "," + orderString
-//
-//	off := int64(2)
-//	stat, err := os.Stat("outputs.json")
-//	fmt.Println("Size : ", stat.Size())
-//	start := stat.Size() - off
-//
-//	tmp := []byte(orderString)
-//	_, err = f.WriteAt(tmp, start)
-//	CheckError(err, c)
-//
-//	str := []byte("]}")
-//	_, err = f.WriteAt(str, start + int64(len(orderString)))
-//	CheckError(err, c)
-//
-//	restaurant := orderData.RestName
-//	cuisine := orderData.Cuisine
-//	state := orderData.State
-//
-//	Restaurant_count[restaurant]++
-//	Cuisine_count[cuisine]++
-//	Orders[string(Id)]++
-//	statemap, ok := State_cuisine_count[state]
-//	if ok {
-//		statemap[cuisine]++
-//	} else {
-//		State_cuisine_count[state] = make(map[string]int)
-//		State_cuisine_count[state][cuisine]++
-//	}
-//
-//	c.JSON(200,gin.H{
-//		"success":"order successfully added",
-//	})
-//
-//	} else {
-//		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
-//	}
-//}
+
+func CheckError(err error)  (*orderspb.AddOrderResponse){
+	tempMap:=make(map[string] string)
+
+	if err != nil {
+		tempMap["error"]=err.Error()
+		res:=&orderspb.AddOrderResponse{
+			Response:tempMap,
+		}
+		return res
+	}
+	return nil
+}
+
+func (s *OrdersServiceServer) AddOrder(c context.Context, request *orderspb.AddOrderRequest) (*orderspb.AddOrderResponse, error) {
+	var orderData Models.Order
+	//var orderData2 Models.Order
+	err := json.Unmarshal([]byte(request.Order), &orderData)
+	res:=CheckError(err)
+	if res!=nil{
+		return res,nil
+	}
+	Id := fmt.Sprint(orderData.Id)
+	fmt.Println(Id)
+	if Orders[string(Id)] >= 1{
+		tempMap:=make(map[string] string)
+		tempMap["error"]=fmt.Sprintf("OrderId %v already present",Id)
+		res:=&orderspb.AddOrderResponse{Response: tempMap}
+		return res, nil
+	}
+
+	f, err := os.OpenFile("outputs.json", os.O_RDWR, os.ModePerm)
+	defer f.Close()
+	res=CheckError(err)
+	if res!=nil{
+		return res,nil
+	}
+
+	orderJson, err := json.Marshal(orderData)
+	res=CheckError(err)
+	if res!=nil{
+		return res,nil
+	}
+
+	orderString := string(orderJson)
+	orderString = "," + orderString
+
+	off := int64(2)
+	stat, err := os.Stat("outputs.json")
+	fmt.Println("Size : ", stat.Size())
+	start := stat.Size() - off
+
+	tmp := []byte(orderString)
+	_, err = f.WriteAt(tmp, start)
+	res=CheckError(err)
+	if res!=nil{
+		return res,nil
+	}
+
+	str := []byte("]}")
+	_, err = f.WriteAt(str, start + int64(len(orderString)))
+	res=CheckError(err)
+	if res!=nil{
+		return res,nil
+	}
+	restaurant := orderData.RestName
+	cuisine := orderData.Cuisine
+	state := orderData.State
+
+	Restaurant_count[restaurant]++
+	Cuisine_count[cuisine]++
+	Orders[string(Id)]++
+	statemap, ok := State_cuisine_count[state]
+	if ok {
+		statemap[cuisine]++
+	} else {
+		State_cuisine_count[state] = make(map[string]int64)
+		State_cuisine_count[state][cuisine]++
+	}
+
+	tempMap:=make(map[string] string)
+	tempMap["success"]="Order successfully added"
+	res=&orderspb.AddOrderResponse{Response: tempMap}
+	return res, nil
+
+}
+
 
 func main()  {
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")

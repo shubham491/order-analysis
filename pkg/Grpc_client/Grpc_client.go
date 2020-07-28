@@ -70,7 +70,7 @@ func GetAllStatesCuisines(c *gin.Context) {
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
 		req := &orderspb.AllStateRequest{}
-		res, err := oc.GetAllState(c, req)
+		res, err := oc.GetAllStateCusine(c, req)
 		c.JSON(200,res.GetAllState())
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
@@ -172,7 +172,7 @@ func AddOrder(c *gin.Context) {
 		body:=c.Request.Body
 		content, err:= ioutil.ReadAll(body)
 		if err != nil {
-			log.Fatalf("Enter valid integer for num: %v: ", err)
+			log.Fatalf(err.Error())
 			return
 		}
 
@@ -184,8 +184,8 @@ func AddOrder(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.TopNumStatesCuisinesRequest{}
-		res, err := oc.GetTopNumStatesCuisines(c, req)
+		req := &orderspb.AddOrderRequest{Order: string(content)}
+		res, err := oc.AddOrder(c, req)
 		c.JSON(200,res)
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})

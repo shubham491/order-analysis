@@ -87,6 +87,7 @@ func (s *OrdersServiceServer) GetAllStateCusine(ctx context.Context, request *or
 
 func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *orderspb.TopNumRestaurantRequest) (*orderspb.TopNumRestaurantResponse, error) {
 	jsonSlice:= KeySort(request.RestaurantCount, string(request.Num))
+	fmt.Println(jsonSlice)
 	var kv=make(map[string] string)
 	for _,v:= range jsonSlice{
 		kv[v.Key]=string(v.Value)

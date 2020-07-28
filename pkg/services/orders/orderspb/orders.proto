@@ -39,15 +39,15 @@ message AllStateResponse {
 }
 
 message TopNumRestaurantResponse{
-  repeated KV topNumRestaurant = 1;
+  map<string,int64>  topNumRestaurant = 1;
 }
 
 message TopNumCuisineResponse{
-  repeated KV topNumCuisine = 1;
+  map<string,int64> topNumCuisine = 1;
 }
 
 message TopNumStatesCuisinesResponse{
-  repeated KV topNumState=1;
+  map<string,int64> topNumState=1;
 }
 
 service OrdersService {

@@ -95,7 +95,12 @@ func (s *OrdersServiceServer) GetAllState(ctx context.Context, request *orderspb
 
 func (s *OrdersServiceServer) GetTopNumRestaurants(c context.Context, request *orderspb.TopNumRestaurantRequest) (*orderspb.TopNumRestaurantResponse, error) {
 	jsonSlice:= KeySort(Restaurant_count, string(request.Num))
-	res:=&orderspb.TopNumRestaurantResponse{TopNumRestaurant:jsonSlice}
+	var kv=make([]*KV,0)
+	for _,v:= range jsonSlice{
+		elem:=KV{v.Key,v.Value}
+		kv=append(kv,&elem)
+	}
+	res:=&orderspb.TopNumRestaurantResponse{TopNumRestaurant:kv}
 	return res, nil
 
 

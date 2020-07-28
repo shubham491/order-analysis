@@ -11,6 +11,11 @@ import (
 	"strconv"
 )
 
+var Restaurant_count = make(map[string] int64)
+var Cuisine_count = make(map[string] int64)
+var State_cuisine_count = make(map[string]map[string]int64)
+var Orders = make(map[string] int64)
+
 func GetAllRestaurants(c *gin.Context) {
 
 	user := c.MustGet(gin.AuthUserKey).(string)

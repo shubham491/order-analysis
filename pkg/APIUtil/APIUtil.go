@@ -28,10 +28,7 @@ import (
 	"github.com/shubham491/order-analysis/pkg/services/orders/orderspb"
 )
 
-var Restaurant_count = make(map[string] int64)
-var Cuisine_count = make(map[string] int64)
-var State_cuisine_count = make(map[string]map[string]int64)
-var Orders = make(map[string] int64)
+
 
 type KV struct {
 	Key   string

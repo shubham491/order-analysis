@@ -112,6 +112,16 @@ func (s *OrdersServiceServer) GetTopNumCuisines(c context.Context, request *orde
 	res:=&orderspb.TopNumCuisineResponse{TopNumCuisine:kv}
 	return res, nil
 }
+
+func (s *OrdersServiceServer) GetTopNumStatesCuisines(c context.Context, request *orderspb.TopNumStatesCuisinesRequest) (*orderspb.TopNumStatesCuisinesResponse, error) {
+	jsonSlice:= KeySort(State_cuisine_count[request.State], string(request.Num))
+	var kv=make(map[string] string)
+	for _,v:= range jsonSlice{
+		kv[v.Key]=string(v.Value)
+	}
+	res:=&orderspb.TopNumStatesCuisinesResponse{TopNumState:kv}
+	return res, nil
+}
 //
 //
 //

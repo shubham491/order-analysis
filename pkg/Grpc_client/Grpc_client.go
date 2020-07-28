@@ -5,6 +5,7 @@ import (
 	"github.com/shubham491/order-analysis/pkg/AuthUtil"
 	"github.com/shubham491/order-analysis/pkg/services/orders/orderspb"
 	"google.golang.org/grpc"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -154,8 +155,37 @@ func GetTopNumStateCuisines(c *gin.Context) {
 
 		defer conn.Close();
 		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.TopNumCuisineRequest{Num:num}
-		res, err := oc.GetTopNumCuisines(c, req)
+		req := &orderspb.TopNumStatesCuisinesRequest{Num:num, State: state}
+		res, err := oc.GetTopNumStatesCuisines(c, req)
+		c.JSON(200,res)
+	} else {
+		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})
+	}
+}
+
+func AddOrder(c *gin.Context) {
+
+	user := c.MustGet(gin.AuthUserKey).(string)
+
+
+	if _, ok := AuthUtil.Secrets[user]; ok {
+		body:=c.Request.Body
+		content, err:= ioutil.ReadAll(body)
+		if err != nil {
+			log.Fatalf("Enter valid integer for num: %v: ", err)
+			return
+		}
+
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+			return
+		}
+
+		defer conn.Close();
+		oc := orderspb.NewOrdersServiceClient(conn)
+		req := &orderspb.TopNumStatesCuisinesRequest{}
+		res, err := oc.GetTopNumStatesCuisines(c, req)
 		c.JSON(200,res)
 	} else {
 		c.JSON(http.StatusOK, gin.H{"user": user, "secret": "NO SECRET :("})

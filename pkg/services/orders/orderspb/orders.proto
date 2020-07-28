@@ -22,6 +22,10 @@ message TopNumStatesCuisinesRequest{
   int64 num=1;
   string state=2;
 }
+message AddOrderRequest{
+  string order=1;
+}
+
 
 message AllRestaurantResponse {
   map<string,int64> allRestaurant=1;
@@ -51,6 +55,10 @@ message TopNumStatesCuisinesResponse{
   map<string,string> topNumState=1;
 }
 
+message AddOrderResponse{
+  map<string, string> response=1;
+}
+
 service OrdersService {
   rpc GetAllRestaurant(AllRestaurantRequest) returns (AllRestaurantResponse) {}
   rpc GetAllCuisine(AllCuisineRequest) returns (AllCuisineResponse) {}
@@ -58,4 +66,5 @@ service OrdersService {
   rpc GetTopNumRestaurants(TopNumRestaurantRequest) returns (TopNumRestaurantResponse){}
   rpc GetTopNumCuisines(TopNumCuisineRequest) returns (TopNumCuisineResponse){}
   rpc GetTopNumStatesCuisines(TopNumStatesCuisinesRequest) returns (TopNumStatesCuisinesResponse){}
+  rpc AddOrder(AddOrderRequest) returns (AddOrderResponse){}
 }

@@ -28,7 +28,7 @@ func addAPIPaths(router *gin.Engine){
 
 	//stateCuisineAPI:=router.Group("/state")
 	stateCuisineAPI.GET("/all", Grpc_client.GetAllStatesCuisines)
-	stateCuisineAPI.GET("/top/:state/:num", APIUtil.GetTopNumStatesCuisines)
+	stateCuisineAPI.GET("/top/:state/:num", Grpc_client.GetTopNumStatesCuisines)
 
 	orderAPI.POST("/add",APIUtil.AddOrder)
 }

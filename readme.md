@@ -33,6 +33,11 @@ The following results are generated using the JSON file:
     
 Added basic authentication to all APIs.
 
+
+### Context Diagram
+
+![Screenshot](assets/context-diagram.png)
+
 ### Data
 
 ```

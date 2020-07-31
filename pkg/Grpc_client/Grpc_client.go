@@ -2,6 +2,7 @@ package Grpc_client
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/shubham491/order-analysis/pkg/AuthUtil"
 	"github.com/shubham491/order-analysis/pkg/services/orders/orderspb"
 	"google.golang.org/grpc"
@@ -10,10 +11,28 @@ import (
 	"net/http"
 )
 
+var (
+	cpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "cpu_temperature_celsius",
+		Help: "Current temperature of the CPU.",
+	})
+	apiHits = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "api_hit_count",
+		Help: "Number of times api's were called.",
+	})
+	hdFailures = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "hd_errors_total",
+			Help: "Number of hard-disk errors.",
+		},
+		[]string{"device"},
+	)
+)
+
 
 
 func GetAllRestaurants(c *gin.Context) {
-
+	apiHits.Inc()
 	user := c.MustGet(gin.AuthUserKey).(string)
 
 

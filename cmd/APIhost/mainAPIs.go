@@ -26,14 +26,14 @@ import (
 
 func init() {
 	// Metrics have to be registered to be exposed:
-	prometheus.MustRegister(Grpc_client.cpuTemp)
-	prometheus.MustRegister(hdFailures)
-	prometheus.MustRegister(apiHits)
+	prometheus.MustRegister(Grpc_client.CpuTemp)
+	prometheus.MustRegister(Grpc_client.HdFailures)
+	prometheus.MustRegister(Grpc_client.ApiHits)
 }
 
 func addAPIPaths(router *gin.Engine){
-	cpuTemp.Set(65.3)
-	hdFailures.With(prometheus.Labels{"device":"/dev/sda"}).Inc()
+	Grpc_client.CpuTemp.Set(65.3)
+	Grpc_client.HdFailures.With(prometheus.Labels{"device":"/dev/sda"}).Inc()
 
 	restaurantAPI := router.Group("/restaurant", gin.BasicAuth(AuthUtil.Accounts))
 	cuisineAPI := router.Group("/cuisine", gin.BasicAuth(AuthUtil.Accounts))

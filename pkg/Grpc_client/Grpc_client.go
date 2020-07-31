@@ -54,6 +54,7 @@ func GetAllRestaurants(c *gin.Context) {
 }
 
 func GetAllCusines(c *gin.Context) {
+	ApiHits.Inc()
 
 	user := c.MustGet(gin.AuthUserKey).(string)
 
@@ -77,6 +78,7 @@ func GetAllCusines(c *gin.Context) {
 
 
 func GetAllStatesCuisines(c *gin.Context) {
+	ApiHits.Inc()
 
 	user := c.MustGet(gin.AuthUserKey).(string)
 
@@ -99,6 +101,7 @@ func GetAllStatesCuisines(c *gin.Context) {
 }
 
 func GetTopNumRestaurants(c *gin.Context) {
+	ApiHits.Inc()
 
 	user := c.MustGet(gin.AuthUserKey).(string)
 
@@ -124,6 +127,7 @@ func GetTopNumRestaurants(c *gin.Context) {
 }
 
 func GetTopNumCuisines(c *gin.Context) {
+	ApiHits.Inc()
 
 	user := c.MustGet(gin.AuthUserKey).(string)
 
@@ -149,6 +153,7 @@ func GetTopNumCuisines(c *gin.Context) {
 }
 
 func GetTopNumStateCuisines(c *gin.Context) {
+	ApiHits.Inc()
 
 	user := c.MustGet(gin.AuthUserKey).(string)
 
@@ -174,6 +179,7 @@ func GetTopNumStateCuisines(c *gin.Context) {
 }
 
 func AddOrder(c *gin.Context) {
+	ApiHits.Inc()
 
 	user := c.MustGet(gin.AuthUserKey).(string)
 

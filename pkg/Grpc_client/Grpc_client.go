@@ -12,15 +12,15 @@ import (
 )
 
 var (
-	cpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
+	CpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "cpu_temperature_celsius",
 		Help: "Current temperature of the CPU.",
 	})
-	apiHits = prometheus.NewGauge(prometheus.GaugeOpts{
+	ApiHits = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "api_hit_count",
 		Help: "Number of times api's were called.",
 	})
-	hdFailures = prometheus.NewCounterVec(
+	HdFailures = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "hd_errors_total",
 			Help: "Number of hard-disk errors.",
@@ -32,7 +32,7 @@ var (
 
 
 func GetAllRestaurants(c *gin.Context) {
-	apiHits.Inc()
+	ApiHits.Inc()
 	user := c.MustGet(gin.AuthUserKey).(string)
 
 
